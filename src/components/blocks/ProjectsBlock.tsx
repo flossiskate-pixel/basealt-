@@ -11,13 +11,32 @@ const MAX_PROJECTS = 10;
 
 interface Props {
   projects: Project[];
+  isLoading?: boolean;
+  error?: string | null;
 }
 
-export function ProjectsBlock({ projects }: Props) {
-  if (projects.length === 0) {
+export function ProjectsBlock({ projects, isLoading, error }: Props) {
+  if (isLoading) {
     return (
-      <p className="text-slate-400 text-sm py-4">Нет проектов</p>
+      <div className="flex flex-col gap-3">
+        <div className="h-10 bg-slate-100 rounded-lg animate-pulse" />
+        <div className="h-12 bg-slate-100 rounded animate-pulse" />
+        <div className="h-12 bg-slate-100 rounded animate-pulse" />
+        <div className="h-12 bg-slate-100 rounded animate-pulse" />
+      </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3">
+        Не удалось загрузить: {error}
+      </div>
+    );
+  }
+
+  if (projects.length === 0) {
+    return <p className="text-slate-400 text-sm py-4">Нет проектов</p>;
   }
 
   const visible = projects.slice(0, MAX_PROJECTS);
@@ -57,6 +76,21 @@ export function ProjectsBlock({ projects }: Props) {
           );
         })}
       </ul>
+
+      <div className="flex gap-3 justify-center text-xs text-slate-500 pt-2">
+        <span className="flex items-center gap-1">
+          <span className={`w-2 h-2 rounded-full ${COLORS.green}`} />
+          в срок
+        </span>
+        <span className="flex items-center gap-1">
+          <span className={`w-2 h-2 rounded-full ${COLORS.yellow}`} />
+          ≤3 дней
+        </span>
+        <span className="flex items-center gap-1">
+          <span className={`w-2 h-2 rounded-full ${COLORS.red}`} />
+          просрочка/блокер
+        </span>
+      </div>
 
       {projects.length > MAX_PROJECTS && (
         <div className="text-xs text-slate-500 text-center pt-2 border-t border-slate-100">

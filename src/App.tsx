@@ -17,7 +17,8 @@ export default function App() {
           title="Главные проекты"
           count={Math.min(mockProjects.length, 10)}
           generatedAt={generatedAt}
-        >
+          onRefresh={() => {}}
+      >
           <ProjectsBlock projects={mockProjects} />
         </BlockCard>
 
