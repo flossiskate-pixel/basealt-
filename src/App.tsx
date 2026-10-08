@@ -4,6 +4,7 @@ import { TasksBlock } from './components/blocks/TasksBlock';
 import { CalendarBlock } from './components/blocks/CalendarBlock';
 import { LeadsBlock } from './components/blocks/LeadsBlock';
 import { mockProjects, mockTasks, mockMeetings, mockLeads } from './mockData';
+import { countWeekTasks } from './domain/tasks';
 
 export default function App() {
   const generatedAt = '06.10.2026';
@@ -24,7 +25,7 @@ export default function App() {
 
         <BlockCard
           title="Задачи на неделю"
-          count={Math.min(mockTasks.length, 10)}
+          count={Math.min(countWeekTasks(mockTasks), 10)}
           generatedAt={generatedAt}
         >
           <TasksBlock tasks={mockTasks} />

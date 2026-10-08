@@ -1,5 +1,6 @@
 import type { Task } from '../types';
 import { todayMsk } from './status';
+import { toIso } from './calendar';
 
 function daysBetween(from: string, to: string): number {
   const a = new Date(from).getTime();
@@ -15,10 +16,25 @@ export interface TaskRow {
 }
 
 export function prepareTasks(tasks: Task[], max = 10) {
-  const today = todayMsk();
+  const today = new Date();
+  const dow = (today.getDay() + 6) % 7; // 0 = понедельник, 6 = воскресенье
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
 
-  const rows: TaskRow[] = tasks.map(task => {
-    const diff = daysBetween(today, task.dueDate);
+  const mondayIso = toIso(monday);
+  const sundayIso = toIso(sunday);
+
+  // Оставляем только задачи, чей дедлайн попадает в текущую неделю
+  const filtered = tasks.filter(t =>
+    t.dueDate >= mondayIso && t.dueDate <= sundayIso
+  );
+
+  const todayIso = todayMsk();
+
+  const rows: TaskRow[] = filtered.map(task => {
+    const diff = daysBetween(todayIso, task.dueDate);
 
     let status: TaskRow['status'];
     if (task.completed) status = 'done';
@@ -51,4 +67,20 @@ export function prepareTasks(tasks: Task[], max = 10) {
 export function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-');
   return `${d}.${m}.${y}`;
+}
+
+export function countWeekTasks(tasks: Task[]): number {
+  const today = new Date();
+  const dow = (today.getDay() + 6) % 7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  const mondayIso = toIso(monday);
+  const sundayIso = toIso(sunday);
+
+  return tasks.filter(t =>
+    t.dueDate >= mondayIso && t.dueDate <= sundayIso
+  ).length;
 }
