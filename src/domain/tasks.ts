@@ -17,7 +17,7 @@ export interface TaskRow {
 
 export function prepareTasks(tasks: Task[], max = 10) {
   const today = new Date();
-  const dow = (today.getDay() + 6) % 7; // 0 = понедельник, 6 = воскресенье
+  const dow = (today.getDay() + 6) % 7;
   const monday = new Date(today);
   monday.setDate(today.getDate() - dow);
   const sunday = new Date(monday);
@@ -26,16 +26,14 @@ export function prepareTasks(tasks: Task[], max = 10) {
   const mondayIso = toIso(monday);
   const sundayIso = toIso(sunday);
 
-  // Оставляем только задачи, чей дедлайн попадает в текущую неделю
-  const filtered = tasks.filter(t =>
-    t.dueDate >= mondayIso && t.dueDate <= sundayIso
+  const filtered = tasks.filter(
+    t => t.dueDate >= mondayIso && t.dueDate <= sundayIso
   );
 
   const todayIso = todayMsk();
 
   const rows: TaskRow[] = filtered.map(task => {
     const diff = daysBetween(todayIso, task.dueDate);
-
     let status: TaskRow['status'];
     if (task.completed) status = 'done';
     else if (diff < 0) status = 'overdue';
@@ -64,11 +62,6 @@ export function prepareTasks(tasks: Task[], max = 10) {
   };
 }
 
-export function formatDate(iso: string): string {
-  const [y, m, d] = iso.split('-');
-  return `${d}.${m}.${y}`;
-}
-
 export function countWeekTasks(tasks: Task[]): number {
   const today = new Date();
   const dow = (today.getDay() + 6) % 7;
@@ -77,10 +70,12 @@ export function countWeekTasks(tasks: Task[]): number {
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
 
-  const mondayIso = toIso(monday);
-  const sundayIso = toIso(sunday);
-
-  return tasks.filter(t =>
-    t.dueDate >= mondayIso && t.dueDate <= sundayIso
+  return tasks.filter(
+    t => t.dueDate >= toIso(monday) && t.dueDate <= toIso(sunday)
   ).length;
+}
+
+export function formatDate(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return `${d}.${m}.${y}`;
 }

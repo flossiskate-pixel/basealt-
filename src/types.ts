@@ -40,18 +40,12 @@ export interface Meeting {
   type: MeetingType;
 }
 
-export type LeadStage =
-  | 'Первый контакт'
-  | 'Обсуждение'
-  | 'Оценка'
-  | 'Пилот';
-
 export interface Lead {
   id: string;
   name: string;
-  source: string;              // откуда пришёл
-  stage: LeadStage;            // стадия
-  score: number;               // 1–5
-  nextStep: string;            // может быть пустым
-  nextStepDate: string | null; // YYYY-MM-DD или null
+  source: string;
+  stage: string;
+  score: number;
+  nextStep: string;
+  nextStepDate: string | null;
 }
