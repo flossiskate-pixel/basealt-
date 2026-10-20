@@ -11,7 +11,7 @@ export interface Project {
   id: string;
   name: string;
   owner: string;
-  stages: Stage[];
+  st: Stage[];
 }
 
 export interface Task {
@@ -19,7 +19,7 @@ export interface Task {
   title: string;
   project: string;
   owner: string;
-  dueDate: string;
+  due: string;
   completed: boolean;
   completedAt: string | null;
 }
@@ -46,6 +46,6 @@ export interface Lead {
   source: string;
   stage: string;
   score: number;
-  nextStep: string;
+  next: string;
   nextStepDate: string | null;
 }

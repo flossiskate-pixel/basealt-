@@ -5,7 +5,7 @@ export const mockProjects: Project[] = [
     id: 'p1',
     name: 'Базальт СПО',
     owner: 'Иванов И.И.',
-    stages: [
+    st: [
       { name: 'Аналитика',   deadline: '2026-10-01', accepted: true,  hasBlocker: false },
       { name: 'Прототип',    deadline: '2026-10-09', accepted: false, hasBlocker: false },
       { name: 'Разработка',  deadline: '2026-10-20', accepted: false, hasBlocker: false },
@@ -17,7 +17,7 @@ export const mockProjects: Project[] = [
     id: 'p2',
     name: 'Микро-ЭВМ',
     owner: 'Петров П.П.',
-    stages: [
+    st: [
       { name: 'Аналитика',   deadline: '2026-10-05', accepted: true,  hasBlocker: false },
       { name: 'Прототип',    deadline: '2026-10-07', accepted: false, hasBlocker: false },
       { name: 'Разработка',  deadline: '2026-10-15', accepted: false, hasBlocker: false },
@@ -29,7 +29,7 @@ export const mockProjects: Project[] = [
     id: 'p3',
     name: 'Пилот с X',
     owner: '',
-    stages: [
+    st: [
       { name: 'Аналитика',   deadline: '2026-09-28', accepted: true,  hasBlocker: false },
       { name: 'Прототип',    deadline: '2026-10-03', accepted: false, hasBlocker: true  },
       { name: 'Разработка',  deadline: '2026-10-12', accepted: false, hasBlocker: false },
@@ -40,11 +40,11 @@ export const mockProjects: Project[] = [
 ];
 
 export const mockTasks: Task[] = [
-  { id: 't1', title: 'Согласовать ТЗ',     project: 'Базальт СПО', owner: 'Иванов И.И.',  dueDate: '2026-10-03', completed: false, completedAt: null },
-  { id: 't2', title: 'Отправить прототип', project: 'Микро-ЭВМ',  owner: 'Петров П.П.',  dueDate: '2026-10-07', completed: false, completedAt: null },
-  { id: 't3', title: 'Ответить клиенту',   project: 'Пилот с X',   owner: 'Сидоров С.С.', dueDate: '2026-10-08', completed: false, completedAt: null },
-  { id: 't4', title: 'Собрать метрики',    project: 'Базальт СПО', owner: 'Иванов И.И.',  dueDate: '2026-10-05', completed: true,  completedAt: '2026-10-05' },
-  { id: 't5', title: 'Позвонить в X',      project: 'Пилот с X',   owner: '',             dueDate: '2026-10-09', completed: false, completedAt: null },
+  { id: 't1', title: 'Согласовать ТЗ',     project: 'Базальт СПО', owner: 'Иванов И.И.',  due: '2026-10-03', completed: false, completedAt: null },
+  { id: 't2', title: 'Отправить прототип', project: 'Микро-ЭВМ',  owner: 'Петров П.П.',  due: '2026-10-07', completed: false, completedAt: null },
+  { id: 't3', title: 'Ответить клиенту',   project: 'Пилот с X',   owner: 'Сидоров С.С.', due: '2026-10-08', completed: false, completedAt: null },
+  { id: 't4', title: 'Собрать метрики',    project: 'Базальт СПО', owner: 'Иванов И.И.',  due: '2026-10-05', completed: true,  completedAt: '2026-10-05' },
+  { id: 't5', title: 'Позвонить в X',      project: 'Пилот с X',   owner: '',             due: '2026-10-09', completed: false, completedAt: null },
 ];
 
 export const mockMeetings: Meeting[] = [
@@ -67,7 +67,7 @@ export const mockLeads: Lead[] = [
     source: 'Рекомендация',
     stage: 'Обсуждение',
     score: 4,
-    nextStep: 'Отправить КП',
+    next: 'Отправить КП',
     nextStepDate: '2026-10-10',
   },
   {
@@ -76,7 +76,7 @@ export const mockLeads: Lead[] = [
     source: 'Холодный лид',
     stage: 'Первый контакт',
     score: 2,
-    nextStep: '',                // ← пусто, подсветится
+    next: '',                // ← пусто, подсветится
     nextStepDate: null,
   },
   {
@@ -85,7 +85,7 @@ export const mockLeads: Lead[] = [
     source: 'Тендер',
     stage: 'Оценка',
     score: 5,
-    nextStep: 'Согласовать пилот',
+    next: 'Согласовать пилот',
     nextStepDate: '2026-10-14',
   },
   {
@@ -94,7 +94,7 @@ export const mockLeads: Lead[] = [
     source: 'Конференция',
     stage: 'Пилот',
     score: 3,
-    nextStep: 'Запустить пилот на 2 недели',
+    next: 'Запустить пилот на 2 недели',
     nextStepDate: '2026-10-18',
   },
   {
@@ -103,7 +103,7 @@ export const mockLeads: Lead[] = [
     source: 'Сайт',
     stage: 'Первый контакт',
     score: 3,
-    nextStep: '',                // ← пусто, подсветится
+    next: '',                // ← пусто, подсветится
     nextStepDate: null,
   },
 ];

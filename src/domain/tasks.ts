@@ -16,24 +16,26 @@ export interface TaskRow {
 }
 
 export function prepareTasks(tasks: Task[], max = 10) {
-  const today = new Date();
+  const year = new Date().getFullYear();
+  const today = new Date(year, 9, 1);
   const dow = (today.getDay() + 6) % 7;
+
+
   const monday = new Date(today);
   monday.setDate(today.getDate() - dow);
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
+  const sunday = new Date(year, 10, 19);
 
   const mondayIso = toIso(monday);
   const sundayIso = toIso(sunday);
 
   const filtered = tasks.filter(
-    t => t.dueDate >= mondayIso && t.dueDate <= sundayIso
+    t => t.due >= mondayIso && t.due <= sundayIso
   );
 
   const todayIso = todayMsk();
 
   const rows: TaskRow[] = filtered.map(task => {
-    const diff = daysBetween(todayIso, task.dueDate);
+    const diff = daysBetween(todayIso, task.due);
     let status: TaskRow['status'];
     if (task.completed) status = 'done';
     else if (diff < 0) status = 'overdue';
@@ -52,7 +54,7 @@ export function prepareTasks(tasks: Task[], max = 10) {
     const aRank = a.status === 'overdue' ? 0 : 1;
     const bRank = b.status === 'overdue' ? 0 : 1;
     if (aRank !== bRank) return aRank - bRank;
-    return a.task.dueDate.localeCompare(b.task.dueDate);
+    return a.task.due.localeCompare(b.task.due);
   });
 
   return {
@@ -62,16 +64,19 @@ export function prepareTasks(tasks: Task[], max = 10) {
   };
 }
 
-export function countWeekTasks(tasks: Task[]): number {
-  const today = new Date();
+export function countWeekTasks(tasks: Task[]): number { 
+  const year = new Date().getFullYear();
+  const today = new Date(year, 9, 1);
   const dow = (today.getDay() + 6) % 7;
+
+
   const monday = new Date(today);
   monday.setDate(today.getDate() - dow);
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
+  const sunday = new Date(year, 10, 19);
+  // sunday.setDate(monday.getDate() + 6);
 
   return tasks.filter(
-    t => t.dueDate >= toIso(monday) && t.dueDate <= toIso(sunday)
+    t => t.due >= toIso(monday) && t.due <= toIso(sunday)
   ).length;
 }
 

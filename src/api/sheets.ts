@@ -1,20 +1,19 @@
 import Papa from 'papaparse';
 
-const SHEET_ID = '11ke4pXeso3pRAmFwSh23XuJIAtXyj7SwDG8jgig3JKw';
+const SHEET_ID = '1oWJHNa1ilkkYYGxiZuiqhCqHDoOIGmue5FTuCF3QKjo';
+const API_KEY = "AIzaSyAGkKeez1jbn1TiRPT3Lv7ejAmfCYi8VBg";
 
 function csvUrl(sheet: string): string {
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheet}`;
+  return `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/` +
+          `${encodeURIComponent(sheet)}?key=${API_KEY}`;
 }
 
 async function fetchSheet(sheet: string): Promise<Record<string, string>[]> {
-  const res = await fetch(csvUrl(sheet));
-  if (!res.ok) throw new Error(`Ошибка загрузки листа ${sheet}: ${res.status}`);
-  const text = await res.text();
-  const parsed = Papa.parse<Record<string, string>>(text, {
-    header: true,
-    skipEmptyLines: true,
+  const res = await fetch(csvUrl(sheet)).then(r => {
+    if (!r.ok) throw new Error(`Ошибка загрузки листа ${sheet}: ${r.status}`);
+    return r.json()
   });
-  return parsed.data;
+  return res.values
 }
 
 export interface RawData {
@@ -26,12 +25,14 @@ export interface RawData {
 }
 
 export async function fetchAllSheets(): Promise<RawData> {
-  const [projects, stages, tasks, meetings, leads] = await Promise.all([
-    fetchSheet('Projects'),
-    fetchSheet('Stages'),
-    fetchSheet('Tasks'),
-    fetchSheet('Meetings'),
-    fetchSheet('Leads'),
-  ]);
-  return { projects, stages, tasks, meetings, leads };
+  const response = await Promise.all([
+    fetchSheet('Проекты'),
+    fetchSheet('Встречи'),
+    fetchSheet('Задачи'),
+    fetchSheet('Потенциальные'),
+    // fetchSheet('Leads'),
+    // []
+    ]);
+  return response
+  // return { projects, stages, tasks, meetings, leads };
 }

@@ -8,9 +8,10 @@ import { LeadsBlock } from './components/blocks/LeadsBlock';
 import { fetchAllSheets } from './api/sheets';
 import { normalize } from './api/normalize';
 import { countWeekTasks } from './domain/tasks';
+import { applySheet } from './api/applySheet';
 
 export default function App() {
-  const [data, setData] = useState<ReturnType<typeof normalize> | null>(null);
+  const [data, setData] = useState<ReturnType<typeof applySheet> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +20,7 @@ export default function App() {
     setError(null);
     try {
       const raw = await fetchAllSheets();
-      setData(normalize(raw));
+      setData(applySheet(raw, {}));
     } catch (e: any) {
       setError(e?.message ?? 'Ошибка загрузки');
     } finally {
@@ -37,9 +38,10 @@ export default function App() {
 
   const projects = data?.projects ?? [];
   const tasks = data?.tasks ?? [];
-  const meetings = data?.meetings ?? [];
-  const leads = data?.leads ?? [];
+  const meetings = data?.events ?? [];
+  const leads = data?.potential ?? [];
 
+  console.log({data, leads })
   return (
     <main className="min-h-screen bg-slate-50 p-4 md:p-6 dark:bg-slate-950">
       <div className="max-w-7xl mx-auto flex items-center justify-between mb-4">

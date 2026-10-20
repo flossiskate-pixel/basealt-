@@ -56,7 +56,7 @@ export function CalendarBlock({ meetings, isLoading, error }: Props) {
   }
 
   const selectedList = selected ? (byDate[selected] ?? []) : [];
-
+console.log({ byDate, selected, grid })
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
@@ -114,7 +114,7 @@ export function CalendarBlock({ meetings, isLoading, error }: Props) {
                   {events.slice(0, 3).map(e => (
                     <span
                       key={e.id}
-                      className={`w-1.5 h-1.5 rounded-full ${MARKER_COLOR[e.type]}`}
+                      className={`w-1.5 h-1.5 rounded-full ${MARKER_COLOR[e.type || 'meeting']}`}
                     />
                   ))}
                 </span>

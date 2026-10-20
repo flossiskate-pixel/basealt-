@@ -65,7 +65,7 @@ export function ProjectsBlock({ projects, isLoading, error }: Props) {
               </div>
 
               <div className="flex gap-1.5 mt-2">
-                {p.stages.map((s, i) => (
+                {p.st.map((s, i) => (
                   <div
                     key={i}
                     title={`${s.name}: ${s.deadline}`}

@@ -28,12 +28,13 @@ export function normalize(data: RawData) {
     stagesByProject.get(pid)!.push(stage);
   }
 
-  const projects: Project[] = data.projects.map(r => ({
+  const projects: Project[] = data.projects.map(r => {
+    return ({
     id: r.id ?? '',
     name: r.name ?? '',
     owner: r.owner ?? '',
     stages: stagesByProject.get(r.id ?? '') ?? [],
-  }));
+  })});
 
   const tasks: Task[] = data.tasks.map(r => ({
     id: r.id ?? '',

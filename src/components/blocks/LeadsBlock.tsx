@@ -8,6 +8,7 @@ interface Props {
 }
 
 export function LeadsBlock({ leads, isLoading, error }: Props) {
+  console.log(leads)
   if (isLoading) {
     return (
       <div className="flex flex-col gap-2">
@@ -58,7 +59,7 @@ export function LeadsBlock({ leads, isLoading, error }: Props) {
             {hasNextStep ? (
               <div className="text-xs text-slate-700 mt-1 dark:text-slate-300">
                 <span className="text-slate-500 dark:text-slate-400">Следующий шаг: </span>
-                {lead.nextStep}
+                {lead.next}
                 {lead.nextStepDate && (
                   <span className="text-slate-500 dark:text-slate-400">
                     {' '}· до {formatDate(lead.nextStepDate)}

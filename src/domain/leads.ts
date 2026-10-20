@@ -13,7 +13,7 @@ export interface LeadRow {
 export function prepareLeads(leads: Lead[], max = 10) {
   const rows: LeadRow[] = leads.map(lead => ({
     lead,
-    hasNextStep: lead.nextStep.trim().length > 0,
+    hasNextStep: lead.next.trim().length > 0,
   }));
 
   // Сначала те, у кого нет следующего шага — их легко потерять

@@ -8,6 +8,7 @@ interface Props {
 }
 
 export function TasksBlock({ tasks, isLoading, error }: Props) {
+  // console.log(tasks, isLoading, error)
   if (isLoading) {
     return (
       <div className="flex flex-col gap-2">
@@ -31,6 +32,7 @@ export function TasksBlock({ tasks, isLoading, error }: Props) {
   }
 
   const { visible, rest } = prepareTasks(tasks);
+  // console.log(visible, rest)
 
   return (
     <div className="flex flex-col gap-2">
@@ -52,7 +54,7 @@ export function TasksBlock({ tasks, isLoading, error }: Props) {
               <div className="text-xs text-slate-500 mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 dark:text-slate-400">
                 <span>📁 {task.project}</span>
                 <span>👤 {task.owner || '—'}</span>
-                <span>📅 {formatDate(task.dueDate)}</span>
+                <span>📅 {formatDate(task.due)}</span>
                 {isOverdue && (
                   <span className="text-red-600 font-medium dark:text-red-400">
                     ⚠ просрочено на {overdueDays} дн.

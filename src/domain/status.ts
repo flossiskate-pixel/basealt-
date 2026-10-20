@@ -23,7 +23,7 @@ export function stageStatus(stage: Stage, owner: string): Status {
 const RANK: Record<Status, number> = { green: 0, yellow: 1, red: 2 };
 
 export function projectStatus(project: Project): Status {
-  if (project.stages.length === 0) return 'green';
-  const statuses = project.stages.map(s => stageStatus(s, project.owner));
+  if (project.st.length === 0) return 'green';
+  const statuses = project.st.map(s => stageStatus(s, project.owner));
   return statuses.reduce((a, b) => (RANK[a] >= RANK[b] ? a : b), 'green' as Status);
 }

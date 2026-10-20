@@ -11,6 +11,8 @@ interface BlockCardProps {
 export function BlockCard({ title, count, generatedAt, onRefresh, children }: BlockCardProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+// debugger
+
   function handleRefresh() {
     setIsRefreshing(true);
     onRefresh?.();
