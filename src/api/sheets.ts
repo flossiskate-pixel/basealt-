@@ -1,5 +1,3 @@
-import Papa from 'papaparse';
-
 const SHEET_ID = '1oWJHNa1ilkkYYGxiZuiqhCqHDoOIGmue5FTuCF3QKjo';
 const API_KEY = "AIzaSyAGkKeez1jbn1TiRPT3Lv7ejAmfCYi8VBg";
 
@@ -9,11 +7,30 @@ function csvUrl(sheet: string): string {
 }
 
 async function fetchSheet(sheet: string): Promise<Record<string, string>[]> {
-  const res = await fetch(csvUrl(sheet)).then(r => {
-    if (!r.ok) throw new Error(`Ошибка загрузки листа ${sheet}: ${r.status}`);
-    return r.json()
+  const res = await fetch(csvUrl(sheet));
+  if (!res.ok) {
+    throw new Error(`Ошибка загрузки листа ${sheet}: ${res.status}`);
+  }
+  
+  const json = await res.json();
+  const rows = json.values || [];
+  
+  if (rows.length === 0) return [];
+
+  // Первая строка — это заголовки (id, name, owner и т.д.)
+  const headers = rows[0];
+
+  // Остальные строки превращаем в объекты, чтобы normalize.ts их понял
+  const data = rows.slice(1).map((row: any[]) => {
+    const obj: Record<string, string> = {};
+    headers.forEach((header: string, index: number) => {
+      // Если ячейка пустая, ставим пустую строку
+      obj[header] = row[index] ?? ''; 
+    });
+    return obj;
   });
-  return res.values
+
+  return data;
 }
 
 export interface RawData {
@@ -25,14 +42,16 @@ export interface RawData {
 }
 
 export async function fetchAllSheets(): Promise<RawData> {
-  const response = await Promise.all([
+  // ВАЖНО: я добавил 'Этапы'. Если в новой таблице лист называется иначе 
+  // (например, 'Stages'), поменяй название здесь!
+  const [projects, stages, tasks, meetings, leads] = await Promise.all([
     fetchSheet('Проекты'),
-    fetchSheet('Встречи'),
+    fetchSheet('Этапы'), 
     fetchSheet('Задачи'),
+    fetchSheet('Встречи'),
     fetchSheet('Потенциальные'),
-    // fetchSheet('Leads'),
-    // []
-    ]);
-  return response
-  // return { projects, stages, tasks, meetings, leads };
+  ]);
+
+  // Возвращаем объект, как того ждет normalize.ts
+  return { projects, stages, tasks, meetings, leads };
 }
