@@ -7,9 +7,7 @@ function parseBool(s: string): boolean {
 }
 
 function safeMeetingType(s: string): MeetingType {
-  if (s === 'meeting' || s === 'project-deadline' || s === 'stage-deadline' || s === 'handover') {
-    return s;
-  }
+  if (s === 'meeting' || s === 'project-deadline' || s === 'stage-deadline' || s === 'handover') return s;
   return 'meeting';
 }
 
@@ -28,13 +26,12 @@ export function normalize(data: RawData) {
     stagesByProject.get(pid)!.push(stage);
   }
 
-  const projects: Project[] = data.projects.map(r => {
-    return ({
+  const projects: Project[] = data.projects.map(r => ({
     id: r.id ?? '',
     name: r.name ?? '',
     owner: r.owner ?? '',
     stages: stagesByProject.get(r.id ?? '') ?? [],
-  })});
+  }));
 
   const tasks: Task[] = data.tasks.map(r => ({
     id: r.id ?? '',

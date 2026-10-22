@@ -1,44 +1,41 @@
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface BlockCardProps {
   title: string;
   count: number;
   generatedAt: string;
-  onRefresh?: () => void;
-  children?: ReactNode;
+  onRefresh: () => void;
+  isLoading?: boolean; // <--- ВОТ ЭТА СТРОКА ИСПРАВИТ ОШИБКУ
+  children: ReactNode;
 }
 
-export function BlockCard({ title, count, generatedAt, onRefresh, children }: BlockCardProps) {
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-// debugger
-
-  function handleRefresh() {
-    setIsRefreshing(true);
-    onRefresh?.();
-    setTimeout(() => setIsRefreshing(false), 1000);
-  }
-
+export function BlockCard({ title, count, generatedAt, onRefresh, isLoading, children }: BlockCardProps) {
   return (
-    <section className="bg-white rounded-xl shadow-sm p-4 flex flex-col min-h-[300px] dark:bg-slate-900 dark:shadow-none dark:border dark:border-slate-800">
-      <header className="flex justify-between items-baseline mb-3 border-b border-slate-200 pb-2 dark:border-slate-800">
-        <h2 className="font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+    <section className="rounded-xl border p-[18px] flex flex-col h-full transition-colors bg-white border-[#e7edf4] shadow-[0_3px_12px_rgba(42,76,115,0.045)] dark:bg-[#121214] dark:border-[#27272a] dark:shadow-lg dark:shadow-black/20">
+      <header className="flex items-center justify-between mb-4 pb-3 border-b border-[#edf2f7] dark:border-[#27272a]">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-slate-400">
-            {count} · на {generatedAt}
+          <h2 className="text-[14px] font-bold text-[#2e4057] dark:text-zinc-100">
+            {title}
+          </h2>
+          <span className="text-[11px] font-semibold text-[#1e88e5] bg-[#e3f2fd] dark:text-purple-400 dark:bg-purple-950/40 px-1.5 py-0.5 rounded">
+            {count}
           </span>
-          {onRefresh && (
-            <button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className="text-xs text-blue-600 hover:underline disabled:text-slate-400 disabled:no-underline dark:text-blue-400 dark:disabled:text-slate-600"
-            >
-              {isRefreshing ? 'Обновление…' : 'Обновить'}
-            </button>
-          )}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-[11px] text-[#94a3b8] dark:text-zinc-500">
+            на {generatedAt}
+          </span>
+          <button
+            onClick={onRefresh}
+            disabled={isLoading}
+            className="text-[12px] font-bold text-[#1a73e8] hover:text-[#1557b0] dark:text-purple-400 dark:hover:text-purple-300 transition disabled:opacity-50"
+          >
+            {isLoading ? 'Обновление…' : 'Обновить'}
+          </button>
         </div>
       </header>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1 min-h-0">{children}</div>
     </section>
   );
 }
