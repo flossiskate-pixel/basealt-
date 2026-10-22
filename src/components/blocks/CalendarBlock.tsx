@@ -141,20 +141,20 @@ console.log({ byDate, selected, grid })
             </p>
           ) : (
             <ul className="flex flex-col gap-2">
-              {selectedList
+              {selectedList 
                 .slice()
-                .sort((a, b) => a.timeMsk.localeCompare(b.timeMsk))
+                .sort((a, b) => a.time.localeCompare(b.time))
                 .map(m => (
                   <li key={m.id} className="flex items-start gap-2 text-sm">
                     <span className={`w-2 h-2 rounded-full mt-1.5 ${MARKER_COLOR[m.type]}`} />
                     <div className="min-w-0 flex-1">
-                      <div className="text-slate-900 dark:text-slate-100">{m.topic}</div>
+                      <div className="text-slate-900 dark:text-slate-100">{m.title}</div>
                       <div className="text-xs text-slate-500 flex flex-wrap gap-x-3 dark:text-slate-400">
-                        {m.timeMsk && <span>🕐 {m.timeMsk} МСК</span>}
+                        {m.time && <span>🕐 {m.time} МСК</span>}
                         <span>👤 {m.owner || '—'}</span>
-                        {m.vksUrl && (
+                        {m.link && (
                           <a
-                            href={m.vksUrl}
+                            href={m.link}
                             target="_blank"
                             rel="noreferrer"
                             className="text-blue-600 hover:underline dark:text-blue-400"

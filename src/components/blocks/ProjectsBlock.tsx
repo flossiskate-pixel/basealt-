@@ -65,13 +65,23 @@ export function ProjectsBlock({ projects, isLoading, error }: Props) {
               </div>
 
               <div className="flex gap-1.5 mt-2">
-                {p.st.map((s, i) => (
-                  <div
+                {p.st.map((s, i) => {
+                  let color;
+                  if (s === 'ok') {
+                    color = COLORS.green
+                  }
+                  if (s === 'plan') {
+                    color = COLORS.yellow
+                  }
+                  if (s === 'warn') {
+                    color = COLORS.red
+                  }
+                  return (<div
                     key={i}
                     title={`${s.name}: ${s.deadline}`}
-                    className={`h-1.5 flex-1 rounded ${COLORS[stageStatus(s, p.owner)]}`}
-                  />
-                ))}
+                    className={`h-1.5 flex-1 rounded ${color}`}
+                  />)
+                })}
               </div>
             </li>
           );

@@ -33,10 +33,10 @@ export type MeetingType =
 export interface Meeting {
   id: string;
   date: string;
-  timeMsk: string;
-  topic: string;
+  time: string;
+  title: string;
   owner: string;
-  vksUrl: string;
+  link: string;
   type: MeetingType;
 }
 

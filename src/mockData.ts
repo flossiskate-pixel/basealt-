@@ -48,16 +48,16 @@ export const mockTasks: Task[] = [
 ];
 
 export const mockMeetings: Meeting[] = [
-  { id: 'm1',  date: '2026-10-06', timeMsk: '10:00', topic: 'Синк по проектам',    owner: 'Иванов И.И.',  vksUrl: 'https://meet.example.com/1', type: 'meeting' },
-  { id: 'm2',  date: '2026-10-06', timeMsk: '15:00', topic: 'Демо прототипа',      owner: 'Петров П.П.',  vksUrl: 'https://meet.example.com/2', type: 'meeting' },
-  { id: 'm3',  date: '2026-10-08', timeMsk: '11:00', topic: 'Согласование ТЗ',     owner: 'Иванов И.И.',  vksUrl: 'https://meet.example.com/3', type: 'meeting' },
-  { id: 'm4',  date: '2026-10-09', timeMsk: '',      topic: 'Дедлайн: прототип',   owner: 'Иванов И.И.',  vksUrl: '', type: 'stage-deadline' },
-  { id: 'm5',  date: '2026-10-12', timeMsk: '14:00', topic: 'Ревью архитектуры',   owner: 'Петров П.П.',  vksUrl: 'https://meet.example.com/4', type: 'meeting' },
-  { id: 'm6',  date: '2026-10-15', timeMsk: '',      topic: 'Дедлайн: разработка', owner: 'Петров П.П.',  vksUrl: '', type: 'stage-deadline' },
-  { id: 'm7',  date: '2026-10-20', timeMsk: '16:00', topic: 'Демо для заказчика',  owner: 'Иванов И.И.',  vksUrl: 'https://meet.example.com/5', type: 'meeting' },
-  { id: 'm8',  date: '2026-10-28', timeMsk: '',      topic: 'Дедлайн: тесты',      owner: 'Сидоров С.С.', vksUrl: '', type: 'stage-deadline' },
-  { id: 'm9',  date: '2026-11-05', timeMsk: '',      topic: 'Сдача Базальт СПО',   owner: 'Иванов И.И.',  vksUrl: '', type: 'handover' },
-  { id: 'm10', date: '2026-11-10', timeMsk: '12:00', topic: 'Планирование ноября', owner: 'Иванов И.И.',  vksUrl: 'https://meet.example.com/6', type: 'meeting' },
+  { id: 'm1',  date: '2026-10-06', time: '10:00', title: 'Синк по проектам',    owner: 'Иванов И.И.',  link: 'https://meet.example.com/1', type: 'meeting' },
+  { id: 'm2',  date: '2026-10-06', time: '15:00', title: 'Демо прототипа',      owner: 'Петров П.П.',  link: 'https://meet.example.com/2', type: 'meeting' },
+  { id: 'm3',  date: '2026-10-08', time: '11:00', title: 'Согласование ТЗ',     owner: 'Иванов И.И.',  link: 'https://meet.example.com/3', type: 'meeting' },
+  { id: 'm4',  date: '2026-10-09', time: '',      title: 'Дедлайн: прототип',   owner: 'Иванов И.И.',  link: '', type: 'stage-deadline' },
+  { id: 'm5',  date: '2026-10-12', time: '14:00', title: 'Ревью архитектуры',   owner: 'Петров П.П.',  link: 'https://meet.example.com/4', type: 'meeting' },
+  { id: 'm6',  date: '2026-10-15', time: '',      title: 'Дедлайн: разработка', owner: 'Петров П.П.',  link: '', type: 'stage-deadline' },
+  { id: 'm7',  date: '2026-10-20', time: '16:00', title: 'Демо для заказчика',  owner: 'Иванов И.И.',  link: 'https://meet.example.com/5', type: 'meeting' },
+  { id: 'm8',  date: '2026-10-28', time: '',      title: 'Дедлайн: тесты',      owner: 'Сидоров С.С.', link: '', type: 'stage-deadline' },
+  { id: 'm9',  date: '2026-11-05', time: '',      title: 'Сдача Базальт СПО',   owner: 'Иванов И.И.',  link: '', type: 'handover' },
+  { id: 'm10', date: '2026-11-10', time: '12:00', title: 'Планирование ноября', owner: 'Иванов И.И.',  link: 'https://meet.example.com/6', type: 'meeting' },
 ];
 
 export const mockLeads: Lead[] = [

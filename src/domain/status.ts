@@ -13,6 +13,7 @@ function daysBetween(from: string, to: string): number {
 }
 
 export function stageStatus(stage: Stage, owner: string): Status {
+  
   if (stage.hasBlocker) return 'red';
   const days = daysBetween(todayMsk(), stage.deadline);
   if (days < 0) return 'red';
