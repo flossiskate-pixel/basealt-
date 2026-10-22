@@ -1,5 +1,11 @@
 import type { Lead } from '../../types';
-import { prepareLeads, formatDate } from '../../domain/leads';
+
+function formatDate(iso: string | null): string {
+  if (!iso) return '—';
+  const parts = String(iso).split('-');
+  if (parts.length !== 3) return String(iso);
+  return `${parts[2]}.${parts[1]}.${parts[0]}`;
+}
 
 interface Props {
   leads: Lead[];
@@ -8,78 +14,54 @@ interface Props {
 }
 
 export function LeadsBlock({ leads, isLoading, error }: Props) {
-  console.log(leads)
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-2">
-        <div className="h-16 bg-slate-100 rounded animate-pulse dark:bg-slate-800" />
-        <div className="h-16 bg-slate-100 rounded animate-pulse dark:bg-slate-800" />
-        <div className="h-16 bg-slate-100 rounded animate-pulse dark:bg-slate-800" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3 dark:bg-red-950 dark:border-red-900 dark:text-red-300">
-        Не удалось загрузить: {error}
-      </div>
-    );
-  }
-
-  if (leads.length === 0) {
-    return (
-      <p className="text-slate-400 text-sm py-4 dark:text-slate-500">
-        Нет потенциальных проектов
-      </p>
-    );
-  }
-
-  const { visible, rest } = prepareLeads(leads);
+  if (isLoading) return <div className="h-20 bg-slate-100 dark:bg-zinc-800 rounded animate-pulse" />;
+  if (error) return <div className="text-rose-500 dark:text-rose-400 p-3 text-sm">{error}</div>;
+  if (leads.length === 0) return <p className="text-slate-400 dark:text-zinc-500 text-sm py-4">Нет лидов</p>;
 
   return (
-    <div className="flex flex-col gap-2">
-      <ul className="flex flex-col divide-y divide-slate-100 dark:divide-slate-800">
-        {visible.map(({ lead, hasNextStep }) => (
-          <li key={lead.id} className="py-2.5">
-            <div className="flex items-start justify-between gap-2">
-              <div className="font-medium text-sm text-slate-900 min-w-0 dark:text-slate-100">
-                {lead.name}
+    <div className="flex flex-col">
+      <ul className="flex flex-col">
+        {leads.slice(0, 10).map(lead => {
+          const safeNextStep = String(lead.nextStep ?? '');
+          const hasNextStep = safeNextStep.trim().length > 0;
+          
+          return (
+            <li key={lead.id} className="py-2.5 border-b border-[#f1f5f9] dark:border-[#27272a] last:border-0">
+              <div className="flex items-start justify-between gap-2">
+                <div className="font-bold text-[12.5px] text-[#0f172a] dark:text-zinc-200">
+                  {String(lead.name || 'Без названия')}
+                </div>
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg key={i} width="11" height="11" viewBox="0 0 24 24" fill={i < Number(lead.score) ? '#fbbf24' : 'none'} stroke={i < Number(lead.score) ? '#fbbf24' : 'currentColor'} className={i < Number(lead.score) ? '' : 'text-[#cbd5e1] dark:text-zinc-600'} strokeWidth="2">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                  ))}
+                </div>
               </div>
-              <div className="shrink-0 text-xs bg-slate-100 text-slate-600 rounded px-1.5 py-0.5 dark:bg-slate-800 dark:text-slate-400">
-                ★ {lead.score}/5
+              
+              <div className="text-[10.5px] text-[#94a3b8] dark:text-zinc-500 mt-1 flex items-center gap-2">
+                <span>📥 {String(lead.source || '—')}</span>
+                <span>⚙ {String(lead.stage || '—')}</span>
+                <span className="ml-auto">{lead.nextStepDate && formatDate(lead.nextStepDate)}</span>
               </div>
-            </div>
 
-            <div className="text-xs text-slate-500 mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 dark:text-slate-400">
-              <span>📥 {lead.source}</span>
-              <span>⚙ {lead.stage}</span>
-            </div>
-
-            {hasNextStep ? (
-              <div className="text-xs text-slate-700 mt-1 dark:text-slate-300">
-                <span className="text-slate-500 dark:text-slate-400">Следующий шаг: </span>
-                {lead.next}
-                {lead.nextStepDate && (
-                  <span className="text-slate-500 dark:text-slate-400">
-                    {' '}· до {formatDate(lead.nextStepDate)}
-                  </span>
+              <div className="mt-1.5">
+                {hasNextStep ? (
+                  <div className="text-[11px] text-[#1e293b] dark:text-zinc-400">
+                    <span className="text-[#1a73e8] dark:text-purple-400 font-medium mr-1">Следующий шаг:</span>
+                    {safeNextStep}
+                  </div>
+                ) : (
+                  <div className="text-[10px] bg-[#fef7e0] text-[#b06000] dark:bg-amber-950/30 dark:text-amber-400 dark:border dark:border-amber-900/50 px-2 py-0.5 rounded inline-block">
+                    ⚠ Следующий шаг не задан
+                  </div>
                 )}
               </div>
-            ) : (
-              <div className="text-xs mt-1 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded px-2 py-1 dark:bg-yellow-950 dark:text-yellow-200 dark:border-yellow-900">
-                ⚠ Следующий шаг не назначен
-              </div>
-            )}
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
-
-      {rest > 0 && (
-        <div className="text-xs text-slate-500 text-center pt-2 border-t border-slate-100 dark:text-slate-400 dark:border-slate-800">
-          ещё {rest}
-        </div>
-      )}
     </div>
   );
 }
