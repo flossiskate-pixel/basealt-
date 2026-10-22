@@ -11,7 +11,7 @@ export interface Project {
   id: string;
   name: string;
   owner: string;
-  st: Stage[];
+  stages: Stage[];
 }
 
 export interface Task {
@@ -19,16 +19,12 @@ export interface Task {
   title: string;
   project: string;
   owner: string;
-  due: string;
+  dueDate: string;
   completed: boolean;
   completedAt: string | null;
 }
 
-export type MeetingType =
-  | 'meeting'
-  | 'project-deadline'
-  | 'stage-deadline'
-  | 'handover';
+export type MeetingType = 'meeting' | 'project-deadline' | 'stage-deadline' | 'handover';
 
 export interface Meeting {
   id: string;
@@ -46,6 +42,6 @@ export interface Lead {
   source: string;
   stage: string;
   score: number;
-  next: string;
+  nextStep: string;
   nextStepDate: string | null;
 }

@@ -1,16 +1,11 @@
 const SHEET_ID = '1oWJHNa1ilkkYYGxiZuiqhCqHDoOIGmue5FTuCF3QKjo';
 const API_KEY = "AIzaSyAGkKeez1jbn1TiRPT3Lv7ejAmfCYi8VBg";
 
-function csvUrl(sheet: string): string {
-  return `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/` +
-          `${encodeURIComponent(sheet)}?key=${API_KEY}`;
-}
-
 async function fetchSheet(sheet: string): Promise<Record<string, string>[]> {
-  const res = await fetch(csvUrl(sheet));
-  if (!res.ok) {
-    throw new Error(`Ошибка загрузки листа ${sheet}: ${res.status}`);
-  }
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(sheet)}?key=${API_KEY}`;
+  const res = await fetch(url);
+  
+  if (!res.ok) throw new Error(`Ошибка загрузки листа ${sheet}: ${res.status}`);
   
   const json = await res.json();
   const rows = json.values || [];
@@ -24,7 +19,6 @@ async function fetchSheet(sheet: string): Promise<Record<string, string>[]> {
   const data = rows.slice(1).map((row: any[]) => {
     const obj: Record<string, string> = {};
     headers.forEach((header: string, index: number) => {
-      // Если ячейка пустая, ставим пустую строку
       obj[header] = row[index] ?? ''; 
     });
     return obj;
@@ -42,16 +36,23 @@ export interface RawData {
 }
 
 export async function fetchAllSheets(): Promise<RawData> {
-  // ВАЖНО: я добавил 'Этапы'. Если в новой таблице лист называется иначе 
-  // (например, 'Stages'), поменяй название здесь!
+  // Защита: если листа нет, он просто вернет [], и остальные блоки продолжат работать
+  const safeFetch = async (sheetName: string) => {
+    try {
+      return await fetchSheet(sheetName);
+    } catch (e) {
+      console.warn(`Ошибка при загрузке листа "${sheetName}":`, e);
+      return []; 
+    }
+  };
+
   const [projects, stages, tasks, meetings, leads] = await Promise.all([
-    fetchSheet('Проекты'),
-    fetchSheet('Этапы'), 
-    fetchSheet('Задачи'),
-    fetchSheet('Встречи'),
-    fetchSheet('Потенциальные'),
+    safeFetch('Проекты'),
+    safeFetch('Этапы'), // <-- ВАЖНО: если вкладка называется иначе, напиши тут её точное имя
+    safeFetch('Задачи'),
+    safeFetch('Встречи'),
+    safeFetch('Потенциальные'),
   ]);
 
-  // Возвращаем объект, как того ждет normalize.ts
   return { projects, stages, tasks, meetings, leads };
 }
