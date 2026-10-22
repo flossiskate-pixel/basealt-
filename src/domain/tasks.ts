@@ -1,6 +1,5 @@
 import type { Task } from '../types';
 import { todayMsk } from './status';
-import { toIso } from './calendar';
 
 function daysBetween(from: string, to: string): number {
   const a = new Date(from).getTime();
@@ -16,20 +15,8 @@ export interface TaskRow {
 }
 
 export function prepareTasks(tasks: Task[], max = 10) {
-  const today = new Date();
-  const dow = (today.getDay() + 6) % 7;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - dow);
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
-
-  const mondayIso = toIso(monday);
-  const sundayIso = toIso(sunday);
-
-  const filtered = tasks.filter(
-    t => String(t.dueDate) >= mondayIso && String(t.dueDate) <= sundayIso
-  );
-
+  // Берем все задачи, без фильтра по неделе
+  const filtered = tasks; 
   const todayIso = todayMsk();
 
   const rows: TaskRow[] = filtered.map(task => {
@@ -48,6 +35,7 @@ export function prepareTasks(tasks: Task[], max = 10) {
     };
   });
 
+  // Сортировка: сначала просроченные, потом по дате
   rows.sort((a, b) => {
     const aRank = a.status === 'overdue' ? 0 : 1;
     const bRank = b.status === 'overdue' ? 0 : 1;
@@ -68,15 +56,14 @@ export function prepareTasks(tasks: Task[], max = 10) {
   };
 }
 
+// Возвращаем общее количество задач для шапки блока
 export function countWeekTasks(tasks: Task[]): number {
-  const today = new Date();
-  const dow = (today.getDay() + 6) % 7;
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - dow);
-  const sunday = new Date(monday);
-  sunday.setDate(monday.getDate() + 6);
+  return tasks.length; 
+}
 
-  return tasks.filter(
-    t => String(t.dueDate) >= toIso(monday) && String(t.dueDate) <= toIso(sunday)
-  ).length;
+export function formatDate(iso: string): string {
+  if (!iso) return '—';
+  const parts = String(iso).split('-');
+  if (parts.length !== 3) return String(iso);
+  return `${parts[2]}.${parts[1]}.${parts[0]}`;
 }
