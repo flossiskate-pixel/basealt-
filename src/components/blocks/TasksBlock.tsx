@@ -1,5 +1,5 @@
 import type { Task } from '../../types';
-import { prepareTasks, formatDate } from '../../domain/tasks';
+import { prepareTasks } from '../../domain/tasks';
 
 function getInitials(name: string): string {
   if (!name) return '—';
@@ -27,9 +27,7 @@ export function TasksBlock({ tasks, isLoading, error }: Props) {
   if (error) return <div className="text-rose-500 dark:text-rose-400 p-3 text-sm">{error}</div>;
   if (tasks.length === 0) return <p className="text-slate-400 dark:text-zinc-500 text-sm py-4">Нет задач</p>;
 
-  const { visible, rest } = prepareTasks(tasks);
-  const total = tasks.length;
-  const done = tasks.filter(t => t.completed).length;
+  const { visible, rest, total, done } = prepareTasks(tasks);
   const percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
@@ -78,7 +76,6 @@ export function TasksBlock({ tasks, isLoading, error }: Props) {
 
               <div className="flex items-center gap-2 shrink-0 pt-0.5">
                 <span className="text-[10.5px] text-[#94a3b8] dark:text-zinc-500 whitespace-nowrap">
-                  {/* Исправлено: due -> dueDate */}
                   {formatDateFigma(task.dueDate)}
                 </span>
                 <div className="w-6 h-6 rounded-full bg-[#e8f0fe] text-[#1a73e8] dark:bg-zinc-800 dark:border dark:border-zinc-700 dark:text-zinc-300 flex items-center justify-center text-[9px] font-bold">

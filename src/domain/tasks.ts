@@ -52,13 +52,19 @@ export function prepareTasks(tasks: Task[], max = 10) {
     const aRank = a.status === 'overdue' ? 0 : 1;
     const bRank = b.status === 'overdue' ? 0 : 1;
     if (aRank !== bRank) return aRank - bRank;
-    return String(a.task.dueDate || '').localeCompare(String(b.task.dueDate || ''));
+    
+    const aDate = String(a.task.dueDate || '');
+    const bDate = String(b.task.dueDate || '');
+    return aDate.localeCompare(bDate);
   });
+
+  const doneCount = rows.filter(r => r.status === 'done').length;
 
   return {
     visible: rows.slice(0, max),
     rest: Math.max(0, rows.length - max),
     total: rows.length,
+    done: doneCount,
   };
 }
 
@@ -73,11 +79,4 @@ export function countWeekTasks(tasks: Task[]): number {
   return tasks.filter(
     t => String(t.dueDate) >= toIso(monday) && String(t.dueDate) <= toIso(sunday)
   ).length;
-}
-
-export function formatDate(iso: string): string {
-  if (!iso) return '—';
-  const parts = String(iso).split('-');
-  if (parts.length !== 3) return String(iso);
-  return `${parts[2]}.${parts[1]}.${parts[0]}`;
 }
