@@ -7,6 +7,7 @@ import { CalendarBlock } from './components/blocks/CalendarBlock';
 import { LeadsBlock } from './components/blocks/LeadsBlock';
 import { fetchAllSheets } from './api/sheets';
 import { normalize } from './api/normalize';
+import { countWeekTasks } from './domain/tasks'; // Возвращаем импорт
 
 export default function App() {
   const [data, setData] = useState<ReturnType<typeof normalize> | null>(null);
@@ -61,8 +62,8 @@ export default function App() {
           </BlockCard>
 
           <BlockCard
-            title="Задачи"
-            count={Math.min(tasks.length, 10)}
+            title="Задачи на неделю" // Вернули правильное название
+            count={Math.min(countWeekTasks(tasks), 10)} // Вернули подсчет только задач текущей недели
             generatedAt={generatedAt}
             onRefresh={load}
             isLoading={isLoading}
