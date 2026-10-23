@@ -5,13 +5,13 @@ interface BlockCardProps {
   count: number;
   generatedAt: string;
   onRefresh: () => void;
-  isLoading?: boolean; // <--- ВОТ ЭТА СТРОКА ИСПРАВИТ ОШИБКУ
+  isLoading?: boolean;
   children: ReactNode;
 }
 
 export function BlockCard({ title, count, generatedAt, onRefresh, isLoading, children }: BlockCardProps) {
   return (
-    <section className="rounded-xl border p-[18px] flex flex-col h-full transition-colors bg-white border-[#e7edf4] shadow-[0_3px_12px_rgba(42,76,115,0.045)] dark:bg-[#121214] dark:border-[#27272a] dark:shadow-lg dark:shadow-black/20">
+    <section className="min-w-0 rounded-xl border p-[18px] flex flex-col h-full transition-colors bg-white border-[#e7edf4] shadow-[0_3px_12px_rgba(42,76,115,0.045)] dark:bg-[#121214] dark:border-[#27272a] dark:shadow-lg dark:shadow-black/20">
       <header className="flex items-center justify-between mb-4 pb-3 border-b border-[#edf2f7] dark:border-[#27272a]">
         <div className="flex items-center gap-2">
           <h2 className="text-[14px] font-bold text-[#2e4057] dark:text-zinc-100">
@@ -35,7 +35,7 @@ export function BlockCard({ title, count, generatedAt, onRefresh, isLoading, chi
           </button>
         </div>
       </header>
-      <div className="flex-1 min-h-0">{children}</div>
+      <div className="flex-1 min-w-0">{children}</div>
     </section>
   );
 }

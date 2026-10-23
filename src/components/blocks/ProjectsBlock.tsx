@@ -1,11 +1,10 @@
-import type { Project, StageStatus, Status } from '../../types';
-import { projectStatus } from '../../domain/status';
+import type { Project, Status } from '../../types';
+import { stageStatus, projectStatus } from '../../domain/status';
 
-const COLORS: Record<StageStatus, string> = {
-  ok: 'bg-emerald-500',
-  risk: 'bg-amber-500',
-  fail: 'bg-rose-500',
-  plan: 'bg-zinc-300 dark:bg-zinc-700',
+const COLORS: Record<Status, string> = {
+  green: 'bg-emerald-500',
+  yellow: 'bg-amber-500',
+  red: 'bg-rose-500',
 };
 
 const STATUS_LABELS: Record<Status, { label: string, style: string }> = {
@@ -46,10 +45,8 @@ export function ProjectsBlock({ projects, isLoading, error }: Props) {
         {visible.map((p, idx) => {
           const status = projectStatus(p);
           const badge = STATUS_LABELS[status];
-          
-          // Считаем прогресс как долю зеленых этапов
-          const okCount = p.stages.filter(s => s.status === 'ok').length;
-          const progress = Math.round((okCount / (p.stages.length || 1)) * 100);
+          const acceptedCount = p.stages.filter(s => s.accepted).length;
+          const progress = Math.round((acceptedCount / (p.stages.length || 1)) * 100);
 
           return (
             <li key={p.id} className="py-2.5 border-b border-[#eef2f7] dark:border-[#27272a] last:border-0">
@@ -85,12 +82,13 @@ export function ProjectsBlock({ projects, isLoading, error }: Props) {
                   {progress}%
                 </span>
 
-                <div className="flex gap-1 flex-1 ml-2" title="Этапы проекта">
+                {/* ВОТ ЗДЕСЬ ДОБАВЛЕН min-w-0 */}
+                <div className="flex gap-1 flex-1 min-w-0 ml-2" title="Этапы проекта (ТЗ)">
                   {p.stages.map((s, i) => (
                     <div
                       key={i}
-                      title={`${s.name}: ${s.status}`}
-                      className={`h-1 flex-1 rounded-full ${COLORS[s.status]}`}
+                      title={`${s.name}: ${s.deadline}`}
+                      className={`h-1 flex-1 rounded-full ${COLORS[stageStatus(s, p.owner)]}`}
                     />
                   ))}
                 </div>

@@ -1,9 +1,10 @@
 export type Status = 'green' | 'yellow' | 'red';
-export type StageStatus = 'ok' | 'risk' | 'fail' | 'plan';
 
 export interface Stage {
   name: string;
-  status: StageStatus;
+  deadline: string;
+  accepted: boolean;
+  hasBlocker: boolean;
 }
 
 export interface Project {
@@ -18,7 +19,7 @@ export interface Task {
   title: string;
   project: string;
   owner: string;
-  dueDate: string; // <--- Только dueDate, никаких due
+  dueDate: string;
   completed: boolean;
   completedAt: string | null;
 }
@@ -28,10 +29,10 @@ export type MeetingType = 'meeting' | 'project-deadline' | 'stage-deadline' | 'h
 export interface Meeting {
   id: string;
   date: string;
-  timeMsk: string; // <--- Только timeMsk, никаких time
-  topic: string;   // <--- Только topic, никаких title
+  timeMsk: string;
+  topic: string;
   owner: string;
-  vksUrl: string;  // <--- Только vksUrl, никаких link
+  vksUrl: string;
   type: MeetingType;
 }
 
@@ -41,6 +42,6 @@ export interface Lead {
   source: string;
   stage: string;
   score: number;
-  nextStep: string; // <--- Только nextStep, никаких next
+  nextStep: string;
   nextStepDate: string | null;
 }
