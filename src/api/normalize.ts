@@ -1,81 +1,62 @@
-import type { Project, Task, Meeting, Lead, MeetingType, Stage } from '../types';
+import type { Project, Task, Meeting, Lead, MeetingType } from '../types';
 import type { RawData } from './sheets';
-
-// Превращает "06.10.2026" в "2026-10-06"
-function parseDate(str: string): string {
-  if (!str) return '';
-  const match = str.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
-  if (match) {
-    const [_, d, m, y] = match;
-    return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-  }
-  return str; 
-}
-
-function getStageStatus(txt: string): Stage['status'] {
-  const s = (txt ?? '').trim().toLowerCase();
-  if (s.includes('в срок')) return 'ok';
-  if (s.includes('риск')) return 'risk';
-  if (s.includes('нарушен')) return 'fail';
-  return 'plan';
-}
 
 function safeMeetingType(s: string): MeetingType {
   if (s === 'meeting' || s === 'project-deadline' || s === 'stage-deadline' || s === 'handover') return s;
   return 'meeting';
 }
 
+function formatDateStr(val: string): string {
+  if (!val) return '';
+  const s = String(val).trim();
+  const match = s.match(/^(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})$/);
+  if (match) {
+    return `${match[3]}-${match[2].padStart(2, '0')}-${match[1].padStart(2, '0')}`;
+  }
+  return s; 
+}
+
 export function normalize(data: RawData) {
-  // В твоей таблице этапы лежат в колонках C, D, E, F, G
-  const stageNames = ['Подготовка', 'Запуск', 'Спринты', 'Защита и приёмка', 'Посттрек'];
-  const stageKeys = ['Подготовка', 'Запуск', 'Спринты', 'Защита и приёмка', 'Посттрек'];
+  const projects: Project[] = data.projects.map(r => ({
+    id: r.id || r['ID'] || '',
+    name: r.name || r['Название'] || r['Имя'] || r['Проект'] || '',
+    owner: r.owner || r['Ответственный'] || r['Владелец'] || '',
+    status: r.status || r['Статус'] || 'По графику',
+    stages: [],
+  }));
 
-  const projects: Project[] = data.projects.map((r, i) => {
-    const stages: Stage[] = stageNames.map((name, idx) => {
-      // Ищем колонку по названию, если не нашли - берем по индексу
-      const key = Object.keys(r).find(k => k.includes(name)) || stageKeys[idx];
-      return {
-        name: name,
-        status: getStageStatus(r[key])
-      };
-    });
-
+  const tasks: Task[] = data.tasks.map(r => {
+    const rawDate = r.dueDate || r['Дедлайн'] || r['Дата'] || r['Срок'] || '';
     return {
-      id: `p${i}`,
-      name: r['Проект'] ?? '',
-      owner: r['Владелец'] ?? '',
-      stages: stages,
+      id: r.id || r['ID'] || '',
+      title: r.title || r['Задача'] || r['Название'] || '',
+      project: r.project || r['Проект'] || '',
+      owner: r.owner || r['Ответственный'] || r['Исполнитель'] || '',
+      dueDate: formatDateStr(rawDate),
+      completed: (r.status || r['Статус'] || '').toLowerCase() === 'done' || (r.status || r['Статус'] || '').toLowerCase() === 'выполнено',
+      completedAt: null,
     };
   });
 
-  const tasks: Task[] = data.tasks.map((r, i) => ({
-    id: `t${i}`,
-    title: r['Задача'] ?? '',
-    project: r['Проект'] ?? '',
-    owner: r['Ответственный'] ?? '',
-    dueDate: parseDate(r['Дедлайн']),
-    completed: false,
-    completedAt: null,
+  const meetings: Meeting[] = data.meetings.map(r => ({
+    id: r.id || r['ID'] || '',
+    date: formatDateStr(r.date || r['Дата'] || ''),
+    timeMsk: r.timeMsk || r['Время'] || '',
+    topic: r.topic || r['Тема'] || r['Название'] || '',
+    owner: r.owner || r['Ответственный'] || '',
+    vksUrl: r.vksUrl || r['Ссылка'] || r['ВКС'] || '',
+    type: safeMeetingType(r.type || r['Тип'] || ''),
   }));
 
-  const meetings: Meeting[] = data.meetings.map((r, i) => ({
-    id: `m${i}`,
-    date: parseDate(r['Дата']),
-    timeMsk: r['Время'] ?? '',
-    topic: r['Тема'] ?? '',
-    owner: r['Ответственный'] ?? '',
-    vksUrl: r['Ссылка ВКС'] ?? '',
-    type: 'meeting',
-  }));
-
-  const leads: Lead[] = data.leads.map((r, i) => ({
-    id: `l${i}`,
-    name: r['Название'] ?? '',
-    source: r['Источник'] ?? '',
-    stage: r['Стадия'] ?? '',
-    score: Number(r['Перспектива'] ?? 1), 
-    nextStep: r['Следующий шаг'] ?? '',
-    nextStepDate: parseDate(r['Дата шага']) || null,
+  const leads: Lead[] = data.leads.map(r => ({
+    id: r.id || r['ID'] || '',
+    name: r.name || r['Название'] || r['Имя'] || '',
+    source: r.source || r['Источник'] || '',
+    stage: r.stage || r['Стадия'] || '',
+    // ДОБАВИЛ 'Перспектива' в поиск рейтинга
+    score: Number(r.score || r['Оценка'] || r['Рейтинг'] || r['Перспектива'] || 0),
+    nextStep: r.nextStep || r['Следующий шаг'] || r['Шаг'] || '',
+    nextStepDate: r.nextStepDate || r['Дата шага'] || null,
   }));
 
   return { projects, tasks, meetings, leads };

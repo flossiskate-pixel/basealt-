@@ -7,7 +7,7 @@ import { CalendarBlock } from './components/blocks/CalendarBlock';
 import { LeadsBlock } from './components/blocks/LeadsBlock';
 import { fetchAllSheets } from './api/sheets';
 import { normalize } from './api/normalize';
-import { countWeekTasks } from './domain/tasks'; // Возвращаем импорт
+import { countWeekTasks } from './domain/tasks';
 
 export default function App() {
   const [data, setData] = useState<ReturnType<typeof normalize> | null>(null);
@@ -62,8 +62,8 @@ export default function App() {
           </BlockCard>
 
           <BlockCard
-            title="Задачи на неделю" // Вернули правильное название
-            count={Math.min(countWeekTasks(tasks), 10)} // Вернули подсчет только задач текущей недели
+            title="Задачи на неделю"
+            count={Math.min(countWeekTasks(tasks), 10)}
             generatedAt={generatedAt}
             onRefresh={load}
             isLoading={isLoading}
@@ -71,12 +71,14 @@ export default function App() {
             <TasksBlock tasks={tasks} isLoading={isLoading} error={error} />
           </BlockCard>
 
+          {/* ВОТ ЗДЕСЬ ПЕРЕДАЕМ noScroll */}
           <BlockCard
             title="Календарь"
             count={meetings.length}
             generatedAt={generatedAt}
             onRefresh={load}
             isLoading={isLoading}
+            noScroll={true} 
           >
             <CalendarBlock meetings={meetings} isLoading={isLoading} error={error} />
           </BlockCard>

@@ -11,6 +11,7 @@ export interface Project {
   id: string;
   name: string;
   owner: string;
+  status?: string; // Статус из таблицы
   stages: Stage[];
 }
 
